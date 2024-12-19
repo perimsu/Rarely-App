@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">RarelyApp</string>
+    <string name="login_title">Log In</string>
+    <string name="create_account_title">Create Account</string>
+    <string name="verification_title">Verification Code</string>
+    <string name="reset_password_title">Create Password</string>
+    <string name="complete_profile_title">Complete Your Profile</string>
+    <string name="verification_code_title">Verıfıcatıon Code</string>
+    <string name="email">Please enter the code that we sent to your address example@gmail.com</string>
+    <string name="code_message">Didn’t Get The Code?</string>
+    <string name="send_again">Send Again</string>
+    <string name="enter">Enter</string>
 </resources>
