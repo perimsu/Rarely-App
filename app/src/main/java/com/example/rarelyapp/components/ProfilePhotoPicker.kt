@@ -59,7 +59,7 @@ fun ProfilePhotoPicker(
 
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
-fun ProfilePhotoPickerPreview() {
+private fun ProfilePhotoPickerPreview() {
     RarelyAppTheme {
         ProfilePhotoPicker()
     }

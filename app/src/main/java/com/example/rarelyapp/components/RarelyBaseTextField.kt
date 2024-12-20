@@ -89,7 +89,7 @@ fun RarelyBaseTextField(
 
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
-fun RoundedEmailTextFieldPreview() {
+private fun RoundedEmailTextFieldPreview() {
     RarelyAppTheme {
         RarelyBaseTextField(
             onValueChange = {},

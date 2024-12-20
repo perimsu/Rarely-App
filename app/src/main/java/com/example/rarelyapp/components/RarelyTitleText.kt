@@ -27,7 +27,7 @@ fun RarelyTitleText(
 
 @Preview(showBackground = true)
 @Composable
-fun RarelyTitleTextPreview() {
+private fun RarelyTitleTextPreview() {
     RarelyAppTheme {
         RarelyTitleText(
             text = "CREATE ACCOUNT",

@@ -52,7 +52,7 @@ fun AuthProviderBox(
 
 @Preview(showBackground = true, showSystemUi = false)
 @Composable
-fun AuthProviderBoxPreview() {
+private fun AuthProviderBoxPreview() {
     RarelyAppTheme {
         AuthProviderBox(
             modifier = Modifier,
