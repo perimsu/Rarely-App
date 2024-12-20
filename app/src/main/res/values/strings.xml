@@ -10,4 +10,11 @@
     <string name="code_message">Didn’t Get The Code?</string>
     <string name="send_again">Send Again</string>
     <string name="enter">Enter</string>
+    <string name="create_account">CREATE ACCOUNT</string>
+    <string name="tf_header_name_surname">Name Surname</string>
+    <string name="password">Password</string>
+    <string name="tf_header_email">E-mail</string>
+    <string name="tf_header_password">Password</string>
+    <string name="button_create_account">Create</string>
+    <string name="checkbox_remember_me">Remember me</string>
 </resources>
