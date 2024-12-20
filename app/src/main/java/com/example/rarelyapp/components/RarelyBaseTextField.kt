@@ -22,12 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rarelyapp.ui.theme.RarelyAppTheme
 
 @Composable
-fun RoundedEmailTextField(
+fun RarelyBaseTextField(
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit = {},
     singleLine: Boolean = true,
@@ -36,6 +37,7 @@ fun RoundedEmailTextField(
     placeholderText: String = "",
     text: String = "",
     textFieldHeader: String = "",
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
 
@@ -56,13 +58,14 @@ fun RoundedEmailTextField(
             singleLine = singleLine,
             maxLines = maxLines,
             textStyle = textStyle,
+            visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(Color.White, shape = RoundedCornerShape(50.dp))
                         .border(1.dp, Color.LightGray, shape = RoundedCornerShape(50.dp))
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     if (text.isEmpty()) {
@@ -88,7 +91,7 @@ fun RoundedEmailTextField(
 @Composable
 fun RoundedEmailTextFieldPreview() {
     RarelyAppTheme {
-        RoundedEmailTextField(
+        RarelyBaseTextField(
             onValueChange = {},
             singleLine = true,
             maxLines = 1,
