@@ -1,5 +1,9 @@
 package com.example.rarelyapp.ui.authentication.complete_account
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.example.rarelyapp.R
 import com.example.rarelyapp.components.ProfilePhotoPicker
 import com.example.rarelyapp.components.RarelyBaseButton
@@ -53,6 +62,14 @@ fun CompleteProfileScreenContent(
     onAction: (CompleteProfileScreenAction) -> Unit,
     onCompleteProfileClicked: () -> Unit,
 ) {
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,9 +77,17 @@ fun CompleteProfileScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(96.dp))
-        RarelyTitleText(stringResource(R.string.complete_profile_title), modifier = Modifier.fillMaxWidth())
+        RarelyTitleText(
+            stringResource(R.string.complete_profile_title),
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        ProfilePhotoPicker()
+        ProfilePhotoPicker(
+            onClick = { photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+            painter = if (selectedImageUri != null) rememberAsyncImagePainter(selectedImageUri) else painterResource(
+                id = R.drawable.profile_photo_icon
+            )
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Column(
             horizontalAlignment = Alignment.Start,

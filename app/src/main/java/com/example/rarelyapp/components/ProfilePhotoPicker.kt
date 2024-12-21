@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -16,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,12 +29,16 @@ import com.example.rarelyapp.ui.theme.RarelyAppTheme
 fun ProfilePhotoPicker(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
+    painter: Painter = painterResource(id = R.drawable.profile_photo_icon)
 ) {
     Box(modifier = modifier) {
         Image(
-            painter = painterResource(id = R.drawable.profile_photo_icon),
+            painter = painter,
             contentDescription = "Profile photo picker",
             modifier = modifier
+                .size(116.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
         IconButton(
             onClick = onClick,
