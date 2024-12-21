@@ -38,7 +38,8 @@ fun RarelyBaseTextField(
     text: String = "",
     textFieldHeader: String = "",
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    readOnly: Boolean = false
 ) {
 
     Column(
@@ -54,6 +55,7 @@ fun RarelyBaseTextField(
 
         BasicTextField(
             value = text,
+            readOnly = readOnly,
             onValueChange = onValueChange,
             singleLine = singleLine,
             maxLines = maxLines,
