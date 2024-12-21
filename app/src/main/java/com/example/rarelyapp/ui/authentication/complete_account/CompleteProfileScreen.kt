@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -30,6 +29,7 @@ import com.example.rarelyapp.R
 import com.example.rarelyapp.components.ProfilePhotoPicker
 import com.example.rarelyapp.components.RarelyBaseButton
 import com.example.rarelyapp.components.RarelyBaseTextField
+import com.example.rarelyapp.components.RarelyDropdownMenu
 import com.example.rarelyapp.components.RarelyTitleText
 import com.example.rarelyapp.ui.theme.RarelyAppTheme
 
@@ -63,6 +63,12 @@ fun CompleteProfileScreenContent(
     onCompleteProfileClicked: () -> Unit,
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedGender by remember { mutableStateOf("") }
+    val genders = listOf(
+        stringResource(R.string.gender_male),
+        stringResource(R.string.gender_female),
+        stringResource(R.string.gender_other)
+    )
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -105,11 +111,12 @@ fun CompleteProfileScreenContent(
                 textFieldHeader = stringResource(R.string.tf_header_phoneNumber)
             )
             Spacer(modifier = Modifier.height(4.dp))
-            RarelyBaseTextField(
+            RarelyDropdownMenu(
                 text = uiState.gender,
-                visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { onAction(CompleteProfileScreenAction.GenderChanged(it)) },
-                textFieldHeader = stringResource(R.string.tf_header_gender)
+                options = genders,
+                onValueChangedEvent = {
+                    onAction(CompleteProfileScreenAction.GenderChanged(it))
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
