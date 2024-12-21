@@ -96,20 +96,20 @@ fun CompleteProfileScreenContent(
             RarelyBaseTextField(
                 text = uiState.username,
                 onValueChange = { onAction(CompleteProfileScreenAction.UserNameChanged(it)) },
-                textFieldHeader = stringResource(R.string.tf_header_name_surname)
+                textFieldHeader = stringResource(R.string.tf_header_username)
             )
             Spacer(modifier = Modifier.height(4.dp))
             RarelyBaseTextField(
                 text = uiState.phoneNumber,
                 onValueChange = { onAction(CompleteProfileScreenAction.PhoneNumberChanged(it)) },
-                textFieldHeader = stringResource(R.string.tf_header_email)
+                textFieldHeader = stringResource(R.string.tf_header_phoneNumber)
             )
             Spacer(modifier = Modifier.height(4.dp))
             RarelyBaseTextField(
                 text = uiState.gender,
                 visualTransformation = PasswordVisualTransformation(),
                 onValueChange = { onAction(CompleteProfileScreenAction.GenderChanged(it)) },
-                textFieldHeader = stringResource(R.string.tf_header_password)
+                textFieldHeader = stringResource(R.string.tf_header_gender)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
