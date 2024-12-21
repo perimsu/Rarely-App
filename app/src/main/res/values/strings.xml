@@ -17,4 +17,6 @@
     <string name="tf_header_password">Password</string>
     <string name="button_create_account">Create</string>
     <string name="checkbox_remember_me">Remember me</string>
+    <string name="already_have_an_account">Do You Have An Account ?</string>
+    <string name="redirect_to_sign_in">Sign In</string>
 </resources>
