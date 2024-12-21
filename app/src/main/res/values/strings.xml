@@ -19,4 +19,5 @@
     <string name="checkbox_remember_me">Remember me</string>
     <string name="already_have_an_account">Do You Have An Account ?</string>
     <string name="redirect_to_sign_in">Sign In</string>
+    <string name="button_enter">Enter</string>
 </resources>

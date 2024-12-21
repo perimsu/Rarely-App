@@ -4,19 +4,25 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rarelyapp.R
@@ -29,7 +35,8 @@ import com.example.rarelyapp.ui.theme.RarelyAppTheme
 @Composable
 fun RegisterScreen(
     uiState: RegisterScreenUiState,
-    onRegisterSuccessfull: () -> Unit,
+    onRegisterSuccessful: () -> Unit,
+    onClickSignIn: () -> Unit,
     onAction: (RegisterScreenAction) -> Unit
 ) {
     Box(
@@ -43,8 +50,9 @@ fun RegisterScreen(
         )
         RegisterScreenContent(
             uiState = uiState,
-            onRegisterClicked = onRegisterSuccessfull,
-            onAction = onAction
+            onRegisterSuccessful = onRegisterSuccessful,
+            onAction = onAction,
+            onClickSignIn = onClickSignIn
         )
     }
 }
@@ -53,7 +61,8 @@ fun RegisterScreen(
 fun RegisterScreenContent(
     uiState: RegisterScreenUiState,
     onAction: (RegisterScreenAction) -> Unit,
-    onRegisterClicked: () -> Unit,
+    onRegisterSuccessful: () -> Unit,
+    onClickSignIn: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -90,7 +99,7 @@ fun RegisterScreenContent(
 
             RarelyBaseButton(
                 text = stringResource(R.string.button_create_account),
-                onClick = onRegisterClicked
+                onClick = onRegisterSuccessful
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -128,6 +137,33 @@ fun RegisterScreenContent(
                     authProviderLogoResource = R.drawable.auth_provider_facebook,
                 )
             }
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.already_have_an_account),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                TextButton(
+                    onClick = onClickSignIn,
+                    modifier = Modifier.padding(start = 4.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.onBackground
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.redirect_to_sign_in),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+            }
+
         }
     }
 }
@@ -138,8 +174,9 @@ fun RegisterScreenPreview() {
     RarelyAppTheme {
         RegisterScreen(
             uiState = RegisterScreenUiState(),
-            onRegisterSuccessfull = {},
-            onAction = {}
+            onRegisterSuccessful = {},
+            onAction = {},
+            onClickSignIn = {}
         )
     }
 }
