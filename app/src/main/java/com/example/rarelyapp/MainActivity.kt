@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     val uiState by completeProfileViewModel.uiState.collectAsStateWithLifecycle()
                     CompleteProfileScreen(
                         uiState = uiState,
-                        onCompleteProfileSuccessful = { /*TODO*/ },
+                        onCompleteProfileSuccessful = {  },
                         onAction = completeProfileViewModel::onAction
                     )
                 }
