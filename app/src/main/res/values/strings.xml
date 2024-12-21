@@ -20,4 +20,7 @@
     <string name="already_have_an_account">Do You Have An Account ?</string>
     <string name="redirect_to_sign_in">Sign In</string>
     <string name="button_enter">Enter</string>
+    <string name="tf_header_phoneNumber">Phone Number</string>
+    <string name="tf_header_gender">Gender</string>
+    <string name="tf_header_username">Username</string>
 </resources>
