@@ -30,6 +30,6 @@
     <string name="dont_have_an_account">Don’t You Have An Account?</string>
     <string name="redirect_to_sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
-
+    <string name="create_Password">CREATE PASSWORD</string>
 
 </resources>
