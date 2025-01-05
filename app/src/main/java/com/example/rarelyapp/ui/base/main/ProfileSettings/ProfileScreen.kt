@@ -287,6 +287,23 @@ fun LabeledTextField(
         }
     }
 }
+data class ProfileScreenUiState(
+    val userName: String = "Emily Johnson",
+    val followingCount: Int = 45,
+    val followerCount: Int = 30,
+    val salesCount: Int = 14,
+    val rareName: String = "",
+    val rareDescription: String = "",
+    val rarePrice: String = ""
+)
+
+sealed interface ProfileScreenAction {
+    data class RareNameChanged(val name: String) : ProfileScreenAction
+    data class RareDescriptionChanged(val description: String) : ProfileScreenAction
+    data class RarePriceChanged(val price: String) : ProfileScreenAction
+    object OnUploadClicked : ProfileScreenAction
+}
+
 
 @Preview
 @Composable

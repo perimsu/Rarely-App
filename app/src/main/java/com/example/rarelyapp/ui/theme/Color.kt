@@ -17,3 +17,5 @@ val Pink40 = Color(0xFF7D5260)
 
 val CustomColor = Color(0xFFC0B8BC)
 val Grey = Color(0xFFBBBABB)
+val Back = Color(0xFFFCF7F0)
+val pink= Color(0xFFFAE7E8)
