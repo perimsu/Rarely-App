@@ -1,5 +1,6 @@
 package com.example.rarelyapp.ui.base.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,13 +35,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rarelyapp.R
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.example.rarelyapp.data.api.RetrofitClient
+import com.example.rarelyapp.data.model.Product
+import kotlinx.coroutines.launch
+import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun FavoritesScreen() {
+    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                products = RetrofitClient.api.getProducts().take(5)
+                Log.d("FavoritesScreen", "Products: $products")
+            } catch (e: Exception) {
+                Log.d("FavoritesScreen", "Products e: ${e.message}")
+                e.printStackTrace()
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.authentication_flow_background),
             contentDescription = null,
@@ -48,7 +76,6 @@ fun FavoritesScreen() {
             contentScale = ContentScale.Crop
         )
         Column {
-            // Başlık
             Text(
                 text = "FAVORITES",
                 modifier = Modifier
@@ -62,21 +89,30 @@ fun FavoritesScreen() {
                 )
             )
 
-            // Favori listesi
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(favoriteItemList) { item ->
-                    FavoriteItemCard(favoriteItem = item)
+                items(products) { product ->
+                    FavoriteItemCard(product)
                 }
             }
+        }
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Alignment.Center),
+                color = Color(0xFF18223D)
+            )
         }
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun FavoriteItemCard(favoriteItem: FavoriteItem) {
+fun FavoriteItemCard(product: Product) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -86,10 +122,9 @@ fun FavoriteItemCard(favoriteItem: FavoriteItem) {
             .clickable { /* Tıklama işlemi */ },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Ürün Görseli
-        Image(
-            painter = painterResource(id = favoriteItem.image),
-            contentDescription = null,
+        GlideImage(
+            model = product.image,
+            contentDescription = product.title,
             modifier = Modifier
                 .size(80.dp)
                 .clip(RoundedCornerShape(12.dp))
@@ -97,12 +132,11 @@ fun FavoriteItemCard(favoriteItem: FavoriteItem) {
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Ürün Bilgileri
         Column(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = favoriteItem.name,
+                text = product.title,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
@@ -110,22 +144,20 @@ fun FavoriteItemCard(favoriteItem: FavoriteItem) {
                 )
             )
             Text(
-                text = "${favoriteItem.price} USD",
+                text = "$${product.price} USD",
                 style = TextStyle(fontSize = 14.sp, color = Color.Gray)
             )
             Text(
-                text = favoriteItem.status,
+                text = "In the favorite list of ${product.rating.count} people",
                 style = TextStyle(fontSize = 12.sp, color = Color.Gray)
             )
         }
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // "To My Bag" metni ve küçültülmüş buton
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // "To My Bag" metni
             Text(
                 text = "To My Bag",
                 style = TextStyle(
@@ -137,11 +169,10 @@ fun FavoriteItemCard(favoriteItem: FavoriteItem) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // "Add to Bag" Butonu
             Box(
                 modifier = Modifier
-                    .size(30.dp) // Buton boyutunu küçültüyoruz
-                    .clip(RoundedCornerShape(15.dp)) // Butonun yuvarlak köşeleri
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(15.dp))
                     .background(Color(0xFF18223D))
                     .clickable { /* Tıklama işlemi */ },
                 contentAlignment = Alignment.Center
@@ -158,45 +189,6 @@ fun FavoriteItemCard(favoriteItem: FavoriteItem) {
         }
     }
 }
-
-
-// Veri modeli
-data class FavoriteItem(
-    val name: String,
-    val price: String,
-    val status: String,
-    val image: Int
-)
-
-// Örnek veri
-val favoriteItemList = listOf(
-    FavoriteItem("Ocean's Reflection", "7000", "In the favorite list of 3 people", R.drawable.fav1),
-    FavoriteItem("Whispering Pathways", "1000", "Not in anyone's favorites", R.drawable.fav2),
-    FavoriteItem(
-        "Louis Vuitton Belle Époque Carryall",
-        "1500",
-        "In the favorite list of 7 people",
-        R.drawable.fav3
-    ),
-    FavoriteItem(
-        "Rolex Datejust 36",
-        "13,000",
-        "In the favorite list of 5 people",
-        R.drawable.fav4
-    ),
-    FavoriteItem(
-        "Liang Xiu Eternal Blossoms",
-        "3000",
-        "Not in anyone's favorites",
-        R.drawable.fav5
-    ),
-    FavoriteItem(
-        "Miu Miu Arcade leather bag",
-        "3500",
-        "In the favorite list of 7 people",
-        R.drawable.fav6
-    )
-)
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

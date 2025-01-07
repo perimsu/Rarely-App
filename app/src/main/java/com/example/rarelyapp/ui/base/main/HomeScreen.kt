@@ -37,12 +37,14 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.rarelyapp.data.api.RetrofitClient
 import com.example.rarelyapp.data.model.Product
+import androidx.compose.material3.CircularProgressIndicator
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreen() {
 
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
 
 
@@ -52,6 +54,8 @@ fun HomeScreen() {
                 products = RetrofitClient.api.getProducts()
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                isLoading = false
             }
         }
     }
@@ -79,164 +83,176 @@ fun HomeScreen() {
     // Vertical scroll state
     val scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(scrollState)
-    ) {
-        Text(
-            text = "Explore",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(vertical = 8.dp),
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(
-            value = "",
-            onValueChange = {},
-            placeholder = { Text("Search") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Top Collections", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(4.dp))
-        LazyRow(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .background(Color(0xFFD9D9D9))
-                .padding(4.dp)
+                .padding(16.dp)
+                .verticalScroll(scrollState)
         ) {
-            items(products.take(5)) { product ->
-                GlideImage(
-                    model = product.image,
-                    contentDescription = product.title,
-                    modifier = Modifier
-                        .size(75.dp)
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Gray)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFFD9D9D9))
-                .padding(4.dp)
-        ) {
-            items(products.drop(5).take(4)) { product ->
-                GlideImage(
-                    model = product.image,
-                    contentDescription = product.title,
-                    modifier = Modifier
-                        .size(75.dp)
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Gray)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xFFD9D9D9))
-                .padding(4.dp)
-        ) {
-            items(products.drop(9).take(4)) { product ->
-                GlideImage(
-                    model = product.image,
-                    contentDescription = product.title,
-                    modifier = Modifier
-                        .size(75.dp)
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.Gray)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // "You May Also Like" Section
-        Text(text = "You May Also Like", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyRow {
-            items(recommendedItems) { item ->
-                Column(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFFFAE7E8))
-                        .width(150.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = item.first),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+            Text(
+                text = "Explore",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(
+                value = "",
+                onValueChange = {},
+                placeholder = { Text("Search") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "Top Collections", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            LazyRow(
+                modifier = Modifier
+                    .background(Color(0xFFD9D9D9))
+                    .padding(4.dp)
+            ) {
+                items(products.take(5)) { product ->
+                    GlideImage(
+                        model = product.image,
+                        contentDescription = product.title,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp)
+                            .size(75.dp)
+                            .padding(4.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = item.second,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(8.dp),
-                        textAlign = TextAlign.Center
+                            .background(Color.Gray)
                     )
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // "Top Collectors" Section
-        Text(text = "Top Collectors", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        LazyRow {
-            items(topCollectors.zip(topCollectorsBg)) { (collector, bgRes) ->
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .width(110.dp)
-                        .height(125.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                ) {
-                    Image(
-                        painter = painterResource(id = bgRes),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
+            Spacer(modifier = Modifier.height(4.dp))
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFD9D9D9))
+                    .padding(4.dp)
+            ) {
+                items(products.drop(5).take(4)) { product ->
+                    GlideImage(
+                        model = product.image,
+                        contentDescription = product.title,
+                        modifier = Modifier
+                            .size(75.dp)
+                            .padding(4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Gray)
                     )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFD9D9D9))
+                    .padding(4.dp)
+            ) {
+                items(products.drop(9).take(4)) { product ->
+                    GlideImage(
+                        model = product.image,
+                        contentDescription = product.title,
+                        modifier = Modifier
+                            .size(75.dp)
+                            .padding(4.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Gray)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // "You May Also Like" Section
+            Text(text = "You May Also Like", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow {
+                items(recommendedItems) { item ->
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFFFAE7E8))
+                            .width(150.dp)
                     ) {
                         Image(
-                            painter = painterResource(id = collector.first),
+                            painter = painterResource(id = item.first),
                             contentDescription = null,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape)
+                                .fillMaxWidth()
+                                .height(140.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .align(Alignment.CenterHorizontally)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = collector.second,
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodySmall,
+                            text = item.second,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(8.dp),
                             textAlign = TextAlign.Center
                         )
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // "Top Collectors" Section
+            Text(text = "Top Collectors", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow {
+                items(topCollectors.zip(topCollectorsBg)) { (collector, bgRes) ->
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .width(110.dp)
+                            .height(125.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    ) {
+                        Image(
+                            painter = painterResource(id = bgRes),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = collector.first),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(CircleShape)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = collector.second,
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Loading indicator
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Alignment.Center),
+                color = Color(0xFF18223D)
+            )
         }
     }
 }
