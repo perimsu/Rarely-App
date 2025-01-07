@@ -38,6 +38,11 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.rarelyapp.data.api.RetrofitClient
 import com.example.rarelyapp.data.model.Product
 import androidx.compose.material3.CircularProgressIndicator
+import android.util.Log
+import com.bumptech.glide.integration.compose.Placeholder
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import kotlinx.coroutines.withTimeout
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -45,15 +50,23 @@ fun HomeScreen() {
 
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-
 
     LaunchedEffect(Unit) {
         scope.launch {
+            isLoading = true
             try {
-                products = RetrofitClient.api.getProducts()
+                withTimeout(5000) { // 5 saniye timeout
+                    products = RetrofitClient.api.getProducts()
+                }
             } catch (e: Exception) {
-                e.printStackTrace()
+                error = when (e) {
+                    is SocketTimeoutException -> "Bağlantı zaman aşımına uğradı"
+                    is UnknownHostException -> "İnternet bağlantınızı kontrol edin"
+                    else -> "Bir hata oluştu: ${e.localizedMessage}"
+                }
+                Log.e("HomeScreen", "Error loading products", e)
             } finally {
                 isLoading = false
             }
@@ -113,7 +126,7 @@ fun HomeScreen() {
             ) {
                 items(products.take(5)) { product ->
                     GlideImage(
-                        model = product.image,
+                        model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""),
                         contentDescription = product.title,
                         modifier = Modifier
                             .size(75.dp)
@@ -133,7 +146,7 @@ fun HomeScreen() {
             ) {
                 items(products.drop(5).take(4)) { product ->
                     GlideImage(
-                        model = product.image,
+                        model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""),
                         contentDescription = product.title,
                         modifier = Modifier
                             .size(75.dp)
@@ -153,7 +166,7 @@ fun HomeScreen() {
             ) {
                 items(products.drop(9).take(4)) { product ->
                     GlideImage(
-                        model = product.image,
+                        model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""),
                         contentDescription = product.title,
                         modifier = Modifier
                             .size(75.dp)
@@ -243,6 +256,17 @@ fun HomeScreen() {
                     }
                 }
             }
+        }
+
+        // Error mesajı
+        error?.let { errorMessage ->
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp)
+            )
         }
 
         // Loading indicator

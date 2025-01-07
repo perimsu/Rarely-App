@@ -47,6 +47,7 @@ import com.example.rarelyapp.data.api.RetrofitClient
 import com.example.rarelyapp.data.model.Product
 import kotlinx.coroutines.launch
 import androidx.compose.material3.CircularProgressIndicator
+import kotlin.random.Random
 
 @Composable
 fun FavoritesScreen() {
@@ -123,7 +124,7 @@ fun FavoriteItemCard(product: Product) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
-            model = product.image,
+            model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""),
             contentDescription = product.title,
             modifier = Modifier
                 .size(80.dp)
@@ -148,7 +149,7 @@ fun FavoriteItemCard(product: Product) {
                 style = TextStyle(fontSize = 14.sp, color = Color.Gray)
             )
             Text(
-                text = "In the favorite list of ${product.rating.count} people",
+                text = "In the favorite list of ${Random.nextInt(1, 100)} people",
                 style = TextStyle(fontSize = 12.sp, color = Color.Gray)
             )
         }

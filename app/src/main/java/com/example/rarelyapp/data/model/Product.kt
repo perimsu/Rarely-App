@@ -3,14 +3,18 @@ package com.example.rarelyapp.data.model
 data class Product(
     val id: Int,
     val title: String,
-    val price: Double,
+    val price: Int,
     val description: String,
-    val category: String,
-    val image: String,
-    val rating: Rating
+    val images: List<String>,
+    val creationAt: String,
+    val updatedAt: String,
+    val category: Category
 )
 
-data class Rating(
-    val rate: Double,
-    val count: Int
+data class Category(
+    val id: Int,
+    val name: String,
+    val image: String,
+    val creationAt: String,
+    val updatedAt: String
 ) 

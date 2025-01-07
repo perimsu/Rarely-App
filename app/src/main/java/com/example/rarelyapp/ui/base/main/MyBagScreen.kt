@@ -1,63 +1,55 @@
 package com.example.rarelyapp.ui.base.main
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.rarelyapp.R
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.example.rarelyapp.data.api.RetrofitClient
+import com.example.rarelyapp.data.model.Product
+import kotlinx.coroutines.launch
+import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun MyBagScreen() {
-    val scrollState = rememberScrollState()
+    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    val scope = rememberCoroutineScope()
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.authentication_flow_background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+    // Total price hesaplama
+    val totalPrice = products.sumOf { it.price }
 
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                products = RetrofitClient.api.getProducts().take(8)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .verticalScroll(scrollState)
+                .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Başlık
             Text(
                 text = "MY BAG",
                 modifier = Modifier
@@ -65,145 +57,108 @@ fun MyBagScreen() {
                     .padding(vertical = 16.dp),
                 textAlign = TextAlign.Center,
                 style = TextStyle(
-                    fontSize = 21.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
             )
 
-            // Çanta içeriği (manuel listeleme)
-            myBagItemList.forEach { item ->
-                MyBagItemCard(bagItem = item)
-                Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(products) { product ->
+                    BagItemCard(product)
+                }
             }
 
-            // Toplam fiyat ve onay butonu
-            Row(
+            // Total Price kısmı
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(vertical = 16.dp)
             ) {
-                Text(
-                    text = "Total Price: 8.888 euro",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-                )
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(Color(0xFF001F54)) // Mavi arka plan rengi
-                        .clickable { /* Onay işlemi */ }
-                        .padding(horizontal = 24.dp, vertical = 8.dp),
-                    contentAlignment = Alignment.Center
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Confirm Card",
+                        text = "Total Price:",
                         style = TextStyle(
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = Color.Black
+                        )
+                    )
+                    Text(
+                        text = "$$totalPrice USD",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
                         )
                     )
                 }
             }
         }
+
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(50.dp)
+                    .align(Alignment.Center),
+                color = Color(0xFF18223D)
+            )
+        }
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MyBagItemCard(bagItem: BagItem) {
+fun BagItemCard(product: Product) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFFBEFF2)) // Açık pembe arka plan rengi
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFFFAE7E8))
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Checkbox
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFF001F54)) // Mavi renk
-                .clickable { /* Seçim işlemi */ },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "✓",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        // Ürün Görseli
-        Image(
-            painter = painterResource(bagItem.image),
-            contentDescription = null,
+        GlideImage(
+            model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""),
+            contentDescription = product.title,
             modifier = Modifier
                 .size(80.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(8.dp))
         )
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Ürün Bilgileri
-        Row(
+        Column(
             modifier = Modifier
                 .weight(1f)
-                .align(Alignment.CenterVertically),
+                .padding(horizontal = 8.dp)
         ) {
             Text(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 8.dp),
-                text = bagItem.name,
+                text = product.title,
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
-                )
+                ),
+                maxLines = 2
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
-                text = bagItem.price,
+                text = "$${product.price} USD",
                 style = TextStyle(
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
             )
         }
     }
-}
-
-// Veri modeli
-data class BagItem(
-    val name: String,
-    val price: String,
-    val image: Int
-)
-
-// Örnek veri
-val myBagItemList = listOf(
-    BagItem("Miu Miu Arcade leather bag", "3500 USD", R.drawable.mb1),
-    BagItem("Amara Celeste Whispers of the Soul", "1000 USD", R.drawable.mb2),
-    BagItem("Louis Vuitton Belle Époque Carryall", "1500 USD", R.drawable.mb3),
-    BagItem("Liang Xiu Eternal Blossoms", "3000 USD", R.drawable.mb4),
-    BagItem("Rolex Datejust 36", "13.000 USD", R.drawable.mb5)
-)
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewMyBagScreen() {
-    MyBagScreen()
 }
