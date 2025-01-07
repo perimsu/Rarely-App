@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rarelyapp.ui.authentication.complete_account.CompleteProfileScreen
 import com.example.rarelyapp.ui.authentication.complete_account.CompleteProfileScreenViewmodel
+import com.example.rarelyapp.ui.base.main.MainNavigation
+import com.example.rarelyapp.ui.base.onboarding.OnboardingScreen
 import com.example.rarelyapp.ui.theme.RarelyAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,15 +22,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RarelyAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val completeProfileViewModel by viewModels<CompleteProfileScreenViewmodel>()
-                    val uiState by completeProfileViewModel.uiState.collectAsStateWithLifecycle()
-                    CompleteProfileScreen(
-                        uiState = uiState,
-                        onCompleteProfileSuccessful = {  },
-                        onAction = completeProfileViewModel::onAction
-                    )
-                }
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    val completeProfileViewModel by viewModels<CompleteProfileScreenViewmodel>()
+//                    val uiState by completeProfileViewModel.uiState.collectAsStateWithLifecycle()
+//                    CompleteProfileScreen(
+//                        uiState = uiState,
+//                        onCompleteProfileSuccessful = {  },
+//                        onAction = completeProfileViewModel::onAction
+//                    )
+//                }
+                MainNavigation()
             }
         }
     }

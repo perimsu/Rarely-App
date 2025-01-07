@@ -25,32 +25,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import com.example.rarelyapp.R
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.example.rarelyapp.data.api.RetrofitClient
+import com.example.rarelyapp.data.model.Product
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HomeScreen() {
-    val topCollections = listOf(
-        R.drawable.pd1,
-        R.drawable.pd2,
-        R.drawable.pd3,
-        R.drawable.pd4,
-        R.drawable.pd5
-    )
 
-    val topCollections2 = listOf(
-        R.drawable.pd6,
-        R.drawable.pd7,
-        R.drawable.pd8,
-        R.drawable.pd9
-    )
+    var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+    val scope = rememberCoroutineScope()
 
-    val topCollections3 = listOf(
-        R.drawable.pd10,
-        R.drawable.pd11,
-        R.drawable.pd12,
-        R.drawable.pd13
-    )
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                products = RetrofitClient.api.getProducts()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     val recommendedItems = listOf(
         Pair(R.drawable.home_pd_1, "Miu Miu Pink Cardigan"),
@@ -102,10 +106,10 @@ fun HomeScreen() {
                 .background(Color(0xFFD9D9D9))
                 .padding(4.dp)
         ) {
-            items(topCollections) { imageRes ->
-                Image(
-                    painter = painterResource(id = imageRes),
-                    contentDescription = null,
+            items(products.take(5)) { product ->
+                GlideImage(
+                    model = product.image,
+                    contentDescription = product.title,
                     modifier = Modifier
                         .size(75.dp)
                         .padding(4.dp)
@@ -122,10 +126,10 @@ fun HomeScreen() {
                 .background(Color(0xFFD9D9D9))
                 .padding(4.dp)
         ) {
-            items(topCollections2) { imageRes ->
-                Image(
-                    painter = painterResource(id = imageRes),
-                    contentDescription = null,
+            items(products.drop(5).take(4)) { product ->
+                GlideImage(
+                    model = product.image,
+                    contentDescription = product.title,
                     modifier = Modifier
                         .size(75.dp)
                         .padding(4.dp)
@@ -142,10 +146,10 @@ fun HomeScreen() {
                 .background(Color(0xFFD9D9D9))
                 .padding(4.dp)
         ) {
-            items(topCollections3) { imageRes ->
-                Image(
-                    painter = painterResource(id = imageRes),
-                    contentDescription = null,
+            items(products.drop(9).take(4)) { product ->
+                GlideImage(
+                    model = product.image,
+                    contentDescription = product.title,
                     modifier = Modifier
                         .size(75.dp)
                         .padding(4.dp)
