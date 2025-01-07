@@ -25,64 +25,78 @@ import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun MyBagScreen() {
+    // Ürün listesini tutmak için state değişkeni
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+    // Yüklenme durumunu takip etmek için state değişkeni
     var isLoading by remember { mutableStateOf(true) }
+    // Coroutine kapsamını hatırlamak için scope
     val scope = rememberCoroutineScope()
 
-    // Total price hesaplama
+    // Ürünlerin toplam fiyatını hesaplar
     val totalPrice = products.sumOf { it.price }
 
+    // Ekran ilk yüklendiğinde ürünleri getirir
     LaunchedEffect(Unit) {
         scope.launch {
             try {
+                // API'den ürünleri al ve ilk 8 ürünü listele
                 products = RetrofitClient.api.getProducts().take(8)
             } catch (e: Exception) {
+                // Hata durumunda hata mesajını yazdır
                 e.printStackTrace()
             } finally {
+                // Veri alımı tamamlandıktan sonra yüklenme durumunu kapat
                 isLoading = false
             }
         }
     }
 
+    // Ana düzen kutusu
     Box(modifier = Modifier.fillMaxSize()) {
+        // Ana kolon, başlık ve ürünler listesi içerir
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            // Başlık metni
             Text(
-                text = "MY BAG",
+                text = "MY BAG", // Sayfa başlığı
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                textAlign = TextAlign.Center,
+                    .fillMaxWidth() // Başlık genişliği ekranın tamamına yayılır
+                    .padding(vertical = 16.dp), // Dikey boşluk eklenir
+                textAlign = TextAlign.Center, // Metin ortalanır
                 style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
+                    fontSize = 24.sp, // Font boyutu
+                    fontWeight = FontWeight.Bold, // Kalın yazı tipi
+                    color = Color.Black // Siyah renk
                 )
             )
 
+            // Ürünleri göstermek için LazyColumn
             LazyColumn(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.weight(1f), // Boşluğu esnek olarak doldurur
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Elemanlar arasında boşluk bırakır
             ) {
+                // Ürün listesinde dolaş ve her ürün için bir BagItemCard oluştur
                 items(products) { product ->
                     BagItemCard(product)
                 }
             }
 
-            // Total Price kısmı
+            // Toplam fiyat kısmı
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .fillMaxWidth() // Ekranın genişliğini kaplar
+                    .padding(vertical = 16.dp) // Dikey boşluk eklenir
             ) {
+                // Fiyat detayları için yatay düzen
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.SpaceBetween, // Elemanları iki uçta hizalar
+                    verticalAlignment = Alignment.CenterVertically // Elemanları dikey ortalar
                 ) {
+                    // "Total Price:" metni
                     Text(
                         text = "Total Price:",
                         style = TextStyle(
@@ -91,8 +105,9 @@ fun MyBagScreen() {
                             color = Color.Black
                         )
                     )
+                    // Toplam fiyat
                     Text(
-                        text = "$$totalPrice USD",
+                        text = "$$totalPrice USD", // Hesaplanan toplam fiyat
                         style = TextStyle(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -103,12 +118,13 @@ fun MyBagScreen() {
             }
         }
 
+        // Yüklenme durumunu gösteren bir döngüsel ilerleme göstergesi
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .size(50.dp)
-                    .align(Alignment.Center),
-                color = Color(0xFF18223D)
+                    .size(50.dp) // Göstergenin boyutu
+                    .align(Alignment.Center), // Göstergenin ortalanması
+                color = Color(0xFF18223D) // Göstergenin rengi
             )
         }
     }
@@ -117,43 +133,48 @@ fun MyBagScreen() {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun BagItemCard(product: Product) {
+    // Ürün kartı düzeni
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFFFAE7E8))
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth() // Kart genişliği ekranın tamamını kaplar
+            .clip(RoundedCornerShape(8.dp)) // Köşeler yuvarlanır
+            .background(Color(0xFFFAE7E8)) // Arka plan rengi
+            .padding(8.dp), // İçerik boşlukları
+        verticalAlignment = Alignment.CenterVertically // Elemanlar dikeyde ortalanır
     ) {
+        // GlideImage kullanarak ürün görselini yükler
         GlideImage(
-            model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""),
-            contentDescription = product.title,
+            model = product.images.firstOrNull()?.replace("[\"", "")?.replace("\"]", ""), // İlk görseli yükler
+            contentDescription = product.title, // Görsel açıklaması
             modifier = Modifier
-                .size(80.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(80.dp) // Görsel boyutu
+                .clip(RoundedCornerShape(8.dp)) // Görsel köşeleri yuvarlanır
         )
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(12.dp)) // Görsel ile metin arasında boşluk bırakır
 
+        // Ürün bilgilerini içeren sütun
         Column(
             modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 8.dp)
+                .weight(1f) // Sütun genişliği esnek olarak doldurur
+                .padding(horizontal = 8.dp) // Yatay boşluk eklenir
         ) {
+            // Ürün adı
             Text(
-                text = product.title,
+                text = product.title, // Ürün başlığı
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 ),
-                maxLines = 2
+                maxLines = 2 // Metni 2 satırla sınırlandırır
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(4.dp)) // Başlık ve fiyat arasında boşluk bırakır
 
+            // Ürün fiyatı
             Text(
-                text = "$${product.price} USD",
+                text = "$${product.price} USD", // Ürün fiyatı
                 style = TextStyle(
                     fontSize = 14.sp,
                     color = Color.Black

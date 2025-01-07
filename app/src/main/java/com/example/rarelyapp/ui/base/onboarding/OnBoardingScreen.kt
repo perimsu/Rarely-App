@@ -23,51 +23,53 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rarelyapp.R
 
+// Karşılama ekranı, kullanıcının uygulamayı başlatması için bir mesaj ve buton içerir.
 @Composable
 fun WelcomeScreen(onStartClicked: () -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+            .fillMaxSize(), // Ekranı tamamen doldurur
+        contentAlignment = Alignment.Center // İçeriği merkezde hizalar
     ) {
+        // Arka plan resmi
         Image(
             painter = painterResource(id = R.drawable.background_blue),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentDescription = null, // Açıklama eklenmedi
+            modifier = Modifier.fillMaxSize(), // Resim ekranı tamamen kaplar
+            contentScale = ContentScale.Crop // Resim ekrana orantılı şekilde kırpılır
         )
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally // İçeriği yatayda merkezler
         ) {
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(64.dp)) // Yukarıdan boşluk bırakır
             Text(
-                modifier = Modifier.weight(2f),
-                text = "WELCOME TO\nRARELY",
-                fontSize = 28.sp,
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White,
-                textAlign = TextAlign.Center
+                modifier = Modifier.weight(2f), // Yükseklik boşluğunu esnek şekilde doldurur
+                text = "WELCOME TO\nRARELY", // Başlık
+                fontSize = 28.sp, // Yazı boyutu
+                style = MaterialTheme.typography.titleLarge, // Temanın başlık yazı tipi
+                color = Color.White, // Yazı rengi
+                textAlign = TextAlign.Center // Metni ortalar
             )
             Column(
                 modifier = Modifier.weight(2f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Your Journey Begins!",
+                    text = "Your Journey Begins!", // Alt başlık
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White,
                     fontSize = 21.sp,
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(36.dp))
+                Spacer(modifier = Modifier.height(36.dp)) // Alt başlık ve buton arasında boşluk
                 Button(
-                    onClick = onStartClicked,
+                    onClick = onStartClicked, // Buton tıklanınca verilen işlev çağrılır
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFC2C2C2)
+                        containerColor = Color(0xFFC2C2C2) // Buton arka plan rengi
                     ),
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp) // Buton kenar boşlukları
                 ) {
-                    Text(text = "Get Started", color = Color(0xFF18233D))
+                    Text(text = "Get Started", color = Color(0xFF18233D)) // Buton metni
                 }
 
             }
@@ -75,14 +77,17 @@ fun WelcomeScreen(onStartClicked: () -> Unit) {
     }
 }
 
+// Onboarding ekranını yöneten bileşen
 @Composable
 fun OnboardingScreen() {
-    var showWelcomeScreen by remember { mutableStateOf(true) }
+    var showWelcomeScreen by remember { mutableStateOf(true) } // Başlangıç ekranı mı, onboarding mi kontrol eder
 
     if (showWelcomeScreen) {
-        WelcomeScreen(onStartClicked = { showWelcomeScreen = false })
+        // Başlangıç ekranını gösterir
+        WelcomeScreen(onStartClicked = { showWelcomeScreen = false }) // Tıklanınca onboarding ekranına geçer
     } else {
         val pages = listOf(
+            // Onboarding sayfaları
             OnboardingPage(
                 title = "WELCOME TO RARELY",
                 description = "Explore, buy, and sell exclusive designer pieces and rare collectibles. From timeless bags to unique artworks, Rarely ensures authenticity and elegance at every step.",
@@ -106,29 +111,32 @@ fun OnboardingScreen() {
             )
         )
 
-        val pagerState = rememberPagerState(initialPage = 0, pageCount = { pages.size })
+        val pagerState = rememberPagerState(initialPage = 0, pageCount = { pages.size }) // Pager durumu
 
         Column(
             modifier = Modifier.fillMaxSize()
-                .padding(bottom = 56.dp)
+                .padding(bottom = 56.dp) // Alt boşluk
         ) {
             Box {
+                // Yatay kaydırılabilir onboarding sayfaları
                 HorizontalPager(
                     state = pagerState
                 ) { page ->
-                    OnboardingPageContent(page = pages[page])
+                    OnboardingPageContent(page = pages[page]) // Her sayfa içeriği
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp)) // Yukarı boşluk
 
+                // Dots göstergesi ve buton
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .align(Alignment.BottomCenter),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxWidth() // Ekranın tamamını kaplar
+                        .padding(horizontal = 24.dp) // Yatay boşluk
+                        .align(Alignment.BottomCenter), // Alt merkeze hizalar
+                    horizontalArrangement = Arrangement.SpaceBetween, // Elemanları iki uçta hizalar
+                    verticalAlignment = Alignment.CenterVertically // Elemanları dikeyde ortalar
                 ) {
+                    // Dots göstergesi
                     DotsIndicator(
                         totalDots = pages.size,
                         selectedIndex = pagerState.currentPage,
@@ -143,7 +151,7 @@ fun OnboardingScreen() {
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = pages[pagerState.currentPage].textColor // Buton arka plan rengi yazı rengine uyumlu
+                            containerColor = pages[pagerState.currentPage].textColor // Buton rengi
                         )
                     ) {
                         Text(
@@ -158,13 +166,15 @@ fun OnboardingScreen() {
     }
 }
 
+// Onboarding sayfası içeriği
 @Composable
 fun OnboardingPageContent(page: OnboardingPage) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center // Merkeze hizalar
     ) {
+        // Arka plan resmi
         Image(
             painter = painterResource(id = page.backgroundImageRes),
             contentDescription = null,
@@ -179,7 +189,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
         ) {
             Spacer(modifier = Modifier.height(36.dp))
             Text(
-                text = page.title,
+                text = page.title, // Başlık
                 style = MaterialTheme.typography.titleLarge,
                 color = page.textColor,
                 textAlign = TextAlign.Center,
@@ -189,7 +199,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = page.description,
+                text = page.description, // Açıklama
                 style = MaterialTheme.typography.bodyLarge,
                 color = page.textColor,
                 textAlign = TextAlign.Center,
@@ -199,7 +209,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
             Spacer(modifier = Modifier.height(32.dp))
 
             Image(
-                painter = painterResource(id = page.imageRes),
+                painter = painterResource(id = page.imageRes), // Görsel
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit
@@ -208,6 +218,7 @@ fun OnboardingPageContent(page: OnboardingPage) {
     }
 }
 
+// Sayfalar arası geçiş için Dots göstergesi
 @Composable
 fun DotsIndicator(totalDots: Int, selectedIndex: Int, color: Color) {
     Row(horizontalArrangement = Arrangement.Center) {
@@ -215,16 +226,17 @@ fun DotsIndicator(totalDots: Int, selectedIndex: Int, color: Color) {
             Box(
                 modifier = Modifier
                     .padding(horizontal = 4.dp)
-                    .size(if (i == selectedIndex) 10.dp else 8.dp)
+                    .size(if (i == selectedIndex) 10.dp else 8.dp) // Seçili nokta büyük
                     .clip(CircleShape)
                     .background(
-                        if (i == selectedIndex) color else color.copy(alpha = 0.4f)
+                        if (i == selectedIndex) color else color.copy(alpha = 0.4f) // Şeffaf renk
                     )
             )
         }
     }
 }
 
+// Onboarding sayfa modeli
 data class OnboardingPage(
     val title: String,
     val description: String,
@@ -233,6 +245,7 @@ data class OnboardingPage(
     val textColor: Color
 )
 
+// Onboarding ekranı önizlemesi
 @Preview(showBackground = true)
 @Composable
 fun OnboardingScreenPreview() {

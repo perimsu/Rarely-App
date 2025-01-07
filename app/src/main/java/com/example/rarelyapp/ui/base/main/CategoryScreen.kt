@@ -20,10 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,84 +33,91 @@ import com.example.rarelyapp.R
 @Composable
 fun CategoriesScreen() {
 
+    // Ana düzeni oluşturur, tüm ekranı kaplar.
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        // Arka plan resmi.
         Image(
             painter = painterResource(id = R.drawable.authentication_flow_background),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentDescription = null, // Arka plan için açıklama gereksizdir.
+            modifier = Modifier.fillMaxSize(), // Resmi tüm ekranı kaplayacak şekilde boyutlandırır.
+            contentScale = ContentScale.Crop // Resmi kırparak tam ekran yapar.
         )
+        // Ana sütun, başlık ve kategori listesini içerir.
         Column {
-            // Başlık
+            // Ekranın başlığı.
             Text(
-                text = "CATEGORIES",
+                text = "CATEGORIES", // Gösterilecek başlık metni.
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                textAlign = TextAlign.Center,
-                style = TextStyle(fontSize = 21.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    .fillMaxWidth() // Başlığı ekranın tam genişliğine yayar.
+                    .padding(vertical = 16.dp), // Dikeyde bir boşluk ekler.
+                textAlign = TextAlign.Center, // Metni ortalar.
+                style = TextStyle(fontSize = 21.sp, fontWeight = FontWeight.Bold, color = Color.Black) // Başlık için metin stili.
             )
 
-            // Kategori listesi
+            // Kategori listesini göstermek için bir LazyColumn.
             LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp), // Kategori listesi için kenar boşlukları.
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Kategoriler arasında boşluk bırakır.
             ) {
+                // categoryList'teki her bir kategori için CategoryItem bileşeni oluşturur.
                 items(categoryList) { category ->
-                    CategoryItem(category = category)
+                    CategoryItem(category = category) // Kategori elemanını CategoryItem'e geçirir.
                 }
             }
         }
     }
-
 }
 
 @Composable
 fun CategoryItem(category: Category) {
+    // Kategori kartını temsil eden kutu.
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(130.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.LightGray) // Yedek bir arka plan
-            .clickable { /* Tıklama işlemi */ }
+            .fillMaxWidth() // Kartın genişliğini ekranın tamamına yayar.
+            .height(130.dp) // Kartın yüksekliğini belirler.
+            .clip(RoundedCornerShape(16.dp)) // Köşeleri yuvarlatır.
+            .background(Color.LightGray) // Varsayılan arka plan rengi.
+            .clickable { /* Tıklama işlemi */ } // Kartın tıklanabilir olmasını sağlar.
     ) {
-        // Arka plan görseli
+        // Kartın arka plan görseli.
         Image(
-            painter = painterResource(category.image),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+            painter = painterResource(category.image), // Kategori görsel kaynağı.
+            contentDescription = null, // Görsel açıklama gerekmez.
+            contentScale = ContentScale.Crop, // Görseli karta uyacak şekilde kırpar.
             modifier = Modifier
-                .fillMaxSize()
-                .height(160.dp)
-                .clip(RoundedCornerShape(16.dp)),
-            alignment = Alignment.Center
+                .fillMaxSize() // Görseli kartın tamamını kaplayacak şekilde boyutlandırır.
+                .height(160.dp) // Görsel yüksekliği.
+                .clip(RoundedCornerShape(16.dp)), // Görselin köşelerini yuvarlar.
+            alignment = Alignment.Center // Görseli ortalar.
         )
-        // Başlık
+        // Kartın üstüne yerleştirilen başlık metni.
         Text(
-            text = category.title,
-            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White),
+            text = category.title, // Kategori başlığı.
+            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White), // Metin stili.
             modifier = Modifier
-                .align(Alignment.TopStart) // Sol üst köşe hizalaması
-                .padding(16.dp)
+                .align(Alignment.TopStart) // Başlığı sol üst köşeye hizalar.
+                .padding(16.dp) // Başlık çevresine boşluk ekler.
         )
     }
 }
 
+// Kategori veri modelini tanımlayan sınıf.
 data class Category(val title: String, val image: Int)
 
+// Kategori listesini tanımlayan örnek veri.
 val categoryList = listOf(
-    Category("Art", R.drawable.cat1),
-    Category("Fashion", R.drawable.cat2),
-    Category("Collabs", R.drawable.cat3),
-    Category("Auction", R.drawable.cat4),
-    Category("Green Collection", R.drawable.cat5)
+    Category("Art", R.drawable.cat1), // Sanat kategorisi.
+    Category("Fashion", R.drawable.cat2), // Moda kategorisi.
+    Category("Collabs", R.drawable.cat3), // İş birliği kategorisi.
+    Category("Auction", R.drawable.cat4), // Müzayede kategorisi.
+    Category("Green Collection", R.drawable.cat5) // Yeşil koleksiyon kategorisi.
 )
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewCategories() {
+    // CategoriesScreen bileşenini önizleme.
     CategoriesScreen()
 }

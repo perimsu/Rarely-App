@@ -48,19 +48,29 @@ import kotlinx.coroutines.withTimeout
 @Composable
 fun HomeScreen() {
 
+    // "products" listesi API'den alınan ürünleri tutar.
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
+
+    // Yüklenme durumunu kontrol eden değişken.
     var isLoading by remember { mutableStateOf(true) }
+
+    // Hata mesajını tutan değişken.
     var error by remember { mutableStateOf<String?>(null) }
+
+    // Coroutine'leri başlatmak için scope oluşturuyoruz.
     val scope = rememberCoroutineScope()
 
+    // Kompozisyon ilk oluşturulduğunda çalışır, veriyi API'den çeker.
     LaunchedEffect(Unit) {
         scope.launch {
             isLoading = true
             try {
-                withTimeout(5000) { // 5 saniye timeout
+                // Veriyi çekmek için 5 saniyelik bir timeout ayarlanmıştır.
+                withTimeout(5000) {
                     products = RetrofitClient.api.getProducts()
                 }
             } catch (e: Exception) {
+                // Hataları yakalar ve uygun hata mesajını ayarlar.
                 error = when (e) {
                     is SocketTimeoutException -> "Bağlantı zaman aşımına uğradı"
                     is UnknownHostException -> "İnternet bağlantınızı kontrol edin"
@@ -68,17 +78,20 @@ fun HomeScreen() {
                 }
                 Log.e("HomeScreen", "Error loading products", e)
             } finally {
+                // Yüklenme durumunu sona erdirir.
                 isLoading = false
             }
         }
     }
 
+    // "You May Also Like" bölümü için önerilen ürünler.
     val recommendedItems = listOf(
         Pair(R.drawable.home_pd_1, "Miu Miu Pink Cardigan"),
         Pair(R.drawable.home_pd_2, "Jeff Koons Rabbit Sculpture"),
         Pair(R.drawable.home_pd_3, "Breitling Navitimer 1.1 Watch")
     )
 
+    // "Top Collectors" bölümü için veriler.
     val topCollectors = listOf(
         Pair(R.drawable.pp_1, "@mirandalove34"),
         Pair(R.drawable.pp_2, "@babybluee465"),
@@ -86,6 +99,7 @@ fun HomeScreen() {
         Pair(R.drawable.pp_4, "@pinkcandyy")
     )
 
+    // Top Collectors arka plan görselleri.
     val topCollectorsBg = listOf(
         R.drawable.pp_1_bg,
         R.drawable.pp_2_bg,
@@ -93,22 +107,27 @@ fun HomeScreen() {
         R.drawable.pp_4_bg
     )
 
-    // Vertical scroll state
+    // Dikey kaydırma durumu.
     val scrollState = rememberScrollState()
 
+    // Ana ekran düzeni.
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .verticalScroll(scrollState)
         ) {
+            // "Explore" başlığı.
             Text(
                 text = "Explore",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp),
                 textAlign = TextAlign.Center
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Arama çubuğu.
             TextField(
                 value = "",
                 onValueChange = {},
@@ -116,9 +135,15 @@ fun HomeScreen() {
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
+            // "Top Collections" başlığı.
             Text(text = "Top Collections", style = MaterialTheme.typography.titleMedium)
+
             Spacer(modifier = Modifier.height(4.dp))
+
+            // İlk 5 ürün için LazyRow.
             LazyRow(
                 modifier = Modifier
                     .background(Color(0xFFD9D9D9))
@@ -138,6 +163,8 @@ fun HomeScreen() {
             }
 
             Spacer(modifier = Modifier.height(4.dp))
+
+            // 6-9. ürünler için LazyRow.
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -158,6 +185,8 @@ fun HomeScreen() {
             }
 
             Spacer(modifier = Modifier.height(4.dp))
+
+            // 10-13. ürünler için LazyRow.
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -176,11 +205,14 @@ fun HomeScreen() {
                     )
                 }
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            // "You May Also Like" Section
+            // "You May Also Like" bölümü.
             Text(text = "You May Also Like", style = MaterialTheme.typography.titleMedium)
+
             Spacer(modifier = Modifier.height(8.dp))
+
             LazyRow {
                 items(recommendedItems) { item ->
                     Column(
@@ -200,7 +232,9 @@ fun HomeScreen() {
                                 .clip(RoundedCornerShape(8.dp))
                                 .align(Alignment.CenterHorizontally)
                         )
+
                         Spacer(modifier = Modifier.height(8.dp))
+
                         Text(
                             text = item.second,
                             style = MaterialTheme.typography.bodyMedium,
@@ -213,9 +247,11 @@ fun HomeScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // "Top Collectors" Section
+            // "Top Collectors" bölümü.
             Text(text = "Top Collectors", style = MaterialTheme.typography.titleMedium)
+
             Spacer(modifier = Modifier.height(8.dp))
+
             LazyRow {
                 items(topCollectors.zip(topCollectorsBg)) { (collector, bgRes) ->
                     Box(
@@ -225,12 +261,15 @@ fun HomeScreen() {
                             .height(125.dp)
                             .clip(RoundedCornerShape(8.dp))
                     ) {
+                        // Arka plan resmi.
                         Image(
                             painter = painterResource(id = bgRes),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
                         )
+
+                        // Koleksiyoncunun bilgilerini içeren düzen.
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -238,6 +277,7 @@ fun HomeScreen() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
+                            // Profil fotoğrafı.
                             Image(
                                 painter = painterResource(id = collector.first),
                                 contentDescription = null,
@@ -245,7 +285,10 @@ fun HomeScreen() {
                                     .size(60.dp)
                                     .clip(CircleShape)
                             )
+
                             Spacer(modifier = Modifier.height(8.dp))
+
+                            // Kullanıcı adı.
                             Text(
                                 text = collector.second,
                                 color = Color.White,
@@ -258,7 +301,7 @@ fun HomeScreen() {
             }
         }
 
-        // Error mesajı
+        // Hata mesajını ekranda gösterir.
         error?.let { errorMessage ->
             Text(
                 text = errorMessage,
@@ -269,7 +312,7 @@ fun HomeScreen() {
             )
         }
 
-        // Loading indicator
+        // Yüklenme göstergesi.
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
@@ -281,6 +324,7 @@ fun HomeScreen() {
     }
 }
 
+// Önizleme fonksiyonu. Bu fonksiyon HomeScreen bileşeninin nasıl görüneceğini hızlıca test etmenizi sağlar.
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
