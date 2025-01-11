@@ -22,7 +22,7 @@ import com.example.rarelyapp.components.AuthProviderBox
 import com.example.rarelyapp.components.RarelyBaseButton
 import com.example.rarelyapp.components.RarelyBaseTextField
 import com.example.rarelyapp.components.RarelyTitleText
-import com.example.rarelyapp.ui.login.LoginScreenAction
+import com.example.rarelyapp.ui.authentication.login.LoginScreenAction
 import com.example.rarelyapp.ui.theme.RarelyAppTheme
 
 @Composable

@@ -4,8 +4,27 @@
         android:fontStyle="normal"
         android:fontWeight="400"
         android:font="@font/aboreto_regular" />
+
     <font
         android:fontStyle="normal"
         android:fontWeight="400"
         android:font="@font/gfs_didot_regular" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/sloop_script_three"
+        />
+
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/playfairdisplay_italic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/playfairdisplay"
+        />
+
 </font-family>

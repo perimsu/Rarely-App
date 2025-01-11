@@ -1,4 +1,4 @@
-package com.example.rarelyapp.ui.login
+package com.example.rarelyapp.ui.authentication.login
 
 sealed interface LoginScreenAction {
     data class EmailChanged(val email: String) : LoginScreenAction

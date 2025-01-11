@@ -1,7 +1,7 @@
 package com.example.rarelyapp.ui.authentication.login
 
 import androidx.lifecycle.ViewModel
-import com.example.rarelyapp.ui.login.LoginScreenAction
+import com.example.rarelyapp.ui.authentication.login.LoginScreenAction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
