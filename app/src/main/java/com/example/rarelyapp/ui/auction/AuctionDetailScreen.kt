@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,7 @@ fun AuctionDetailScreen() {
     var startingPrice by remember { mutableStateOf(30.00) }
     var userInput by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+    var successMessage by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -119,26 +122,47 @@ fun AuctionDetailScreen() {
 
         TextField(
             value = userInput,
-            onValueChange = { userInput = it },
+            onValueChange = { input ->
+                if (input.isEmpty() || input.matches(Regex("^\\d*\\.?\\d*$"))) {
+                    userInput = input
+                    errorMessage = ""
+                    successMessage = ""
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .background(
-                    color = Color(0xFFFAF7F2),
-                    shape = RoundedCornerShape(12.dp)
-                )
                 .border(
                     width = 1.dp,
                     color = Color(0xFF001F54),
                     shape = RoundedCornerShape(24.dp)
                 ),
-            singleLine = true
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color(0xFFFAF7F2),
+                focusedContainerColor = Color(0xFFFAF7F2),
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal
+            ),
+            singleLine = true,
+            placeholder = { Text("Enter your bid amount") }
         )
 
         if (errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
                 color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+
+        if (successMessage.isNotEmpty()) {
+            Text(
+                text = successMessage,
+                color = Color(0xFF4CAF50),
                 fontSize = 12.sp,
                 modifier = Modifier.padding(top = 8.dp)
             )
@@ -151,11 +175,15 @@ fun AuctionDetailScreen() {
                 val bid = userInput.toDoubleOrNull()
                 if (bid == null) {
                     errorMessage = "Please enter a valid number."
+                    successMessage = ""
                 } else if (bid <= startingPrice) {
                     errorMessage = "Your bid must be higher than the starting price."
+                    successMessage = ""
                 } else {
                     startingPrice = bid
                     errorMessage = ""
+                    successMessage = "Your bid of $%.2f USD has been placed successfully!".format(bid)
+                    userInput = ""
                 }
             },
             modifier = Modifier
