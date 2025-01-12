@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -93,6 +94,8 @@ fun LargeCollaborationsProductCard(imageResId: Int, title: String, price: String
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
+            .shadow(4.dp, shape = RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.background(Color.White)) {
             Image(
@@ -162,6 +165,12 @@ fun LargeCollaborationsProductCard(imageResId: Int, title: String, price: String
                     }
                 }
             }
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(top = 0.dp)
+            )
         }
     }
 }

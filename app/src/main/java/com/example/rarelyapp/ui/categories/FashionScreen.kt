@@ -29,7 +29,7 @@ import com.example.rarelyapp.ui.theme.playfairdisplay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ArtScreen() {
+fun FashionScreen() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +41,7 @@ fun ArtScreen() {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "ART",
+                text = "FASHION",
                 fontFamily = aboreto,
                 color = DarkBlue,
                 fontSize = 28.sp,
@@ -53,12 +53,13 @@ fun ArtScreen() {
         }
 
         item {
-            LargeArtProductCard(
-                imageResId = R.drawable.kintsugi_vase,
-                title = "Stories Woven in Gold",
-                price = "20.000 USD"
+            LargeFashionProductCard(
+                imageResId = R.drawable.rolex,
+                title = "Rolex Oyster Perpetual Datejust",
+                price = "40.000 USD"
             )
         }
+
 
         item {
             Text(
@@ -68,15 +69,15 @@ fun ArtScreen() {
                 fontSize = 14.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
             )
         }
 
         val products = listOf(
-            ArtScreenItem("Painting", "700 USD", R.drawable.art1),
-            ArtScreenItem("Painting", "4,000 USD", R.drawable.art2),
-            ArtScreenItem("Painting", "3,500 USD", R.drawable.art3),
-            ArtScreenItem("Painting", "2,000 USD", R.drawable.art4)
+            FashionScreenItem("Lady Dior Micro Bag", "4700 USD", R.drawable.dior_bag),
+            FashionScreenItem("Gucci Monogram Shirt", "3,000 USD", R.drawable.gucci),
+            FashionScreenItem("Louis Vuitton\n" +
+                    "Limited Edition Coated Canvas Jeff Koons Monet", "7,500 USD", R.drawable.monet),
+            FashionScreenItem("Miu Miu Arcadie Leather Bag", "3,500 USD", R.drawable.miumiu)
         )
 
         item {
@@ -101,7 +102,7 @@ fun ArtScreen() {
 }
 
 @Composable
-fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
+fun LargeFashionProductCard(imageResId: Int, title: String, price: String) {
     var isFavorite by remember { mutableStateOf(false) }
 
     Card(
@@ -109,10 +110,8 @@ fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(12.dp)
-            )
+            .shadow(4.dp, shape = RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.background(Color.White)) {
             Image(
@@ -154,6 +153,7 @@ fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
                             tint = if (isFavorite) Color.Red else Color.Gray,
                             modifier = Modifier.size(20.dp)
                         )
+
                     }
                 }
             }
@@ -168,7 +168,7 @@ fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
 }
 
 @Composable
-fun SmallArtProductCard(title: String, price: String, imageResId: Int) {
+fun SmallFashionProductCard(title: String, price: String, imageResId: Int) {
     var isFavorite by remember { mutableStateOf(false) }
 
     Card(
@@ -236,7 +236,7 @@ fun SmallArtProductCard(title: String, price: String, imageResId: Int) {
     }
 }
 
-data class ArtScreenItem(
+data class FashionScreenItem(
     val title: String,
     val price: String,
     val imageResId: Int
@@ -244,13 +244,13 @@ data class ArtScreenItem(
 
 @Preview(showBackground = true)
 @Composable
-fun ArtScreenPreview() {
+fun FashionScreenPreview() {
     MaterialTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ArtScreen()
+            FashionScreen()
         }
     }
 }

@@ -52,6 +52,7 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(libs.androidx.media3.effect)
+    implementation(libs.play.services.analytics.impl)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

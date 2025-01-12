@@ -29,7 +29,7 @@ import com.example.rarelyapp.ui.theme.playfairdisplay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ArtScreen() {
+fun GreenCollectionScreen() {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +41,7 @@ fun ArtScreen() {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "ART",
+                text = "GREEN COLLECTION",
                 fontFamily = aboreto,
                 color = DarkBlue,
                 fontSize = 28.sp,
@@ -53,10 +53,10 @@ fun ArtScreen() {
         }
 
         item {
-            LargeArtProductCard(
-                imageResId = R.drawable.kintsugi_vase,
-                title = "Stories Woven in Gold",
-                price = "20.000 USD"
+            LargeGreenCollectionProductCard(
+                imageResId = R.drawable.greencollection,
+                title = "Sticky Harmony Sustainable Jean Bag",
+                price = "3.600 USD"
             )
         }
 
@@ -73,10 +73,10 @@ fun ArtScreen() {
         }
 
         val products = listOf(
-            ArtScreenItem("Painting", "700 USD", R.drawable.art1),
-            ArtScreenItem("Painting", "4,000 USD", R.drawable.art2),
-            ArtScreenItem("Painting", "3,500 USD", R.drawable.art3),
-            ArtScreenItem("Painting", "2,000 USD", R.drawable.art4)
+            GreenCollectionScreenItem("Masion Dousha Bag", "1300 USD", R.drawable.green1),
+            GreenCollectionScreenItem("Ousha Coat", "2,000 USD", R.drawable.green2),
+            GreenCollectionScreenItem("Green Collection", "3,500 USD", R.drawable.green3),
+            GreenCollectionScreenItem("Green Collection", "2,000 USD", R.drawable.green4)
         )
 
         item {
@@ -89,7 +89,7 @@ fun ArtScreen() {
                     .height(650.dp)
             ) {
                 items(products) { product ->
-                    SmallArtProductCard(
+                    SmallGreenCollectionProductCard(
                         title = product.title,
                         price = product.price,
                         imageResId = product.imageResId
@@ -101,7 +101,7 @@ fun ArtScreen() {
 }
 
 @Composable
-fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
+fun LargeGreenCollectionProductCard(imageResId: Int, title: String, price: String) {
     var isFavorite by remember { mutableStateOf(false) }
 
     Card(
@@ -109,10 +109,8 @@ fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 16.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(12.dp)
-            )
+            .shadow(4.dp, shape = RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.background(Color.White)) {
             Image(
@@ -168,7 +166,7 @@ fun LargeArtProductCard(imageResId: Int, title: String, price: String) {
 }
 
 @Composable
-fun SmallArtProductCard(title: String, price: String, imageResId: Int) {
+fun SmallGreenCollectionProductCard(title: String, price: String, imageResId: Int) {
     var isFavorite by remember { mutableStateOf(false) }
 
     Card(
@@ -236,7 +234,7 @@ fun SmallArtProductCard(title: String, price: String, imageResId: Int) {
     }
 }
 
-data class ArtScreenItem(
+data class GreenCollectionScreenItem(
     val title: String,
     val price: String,
     val imageResId: Int
@@ -244,13 +242,13 @@ data class ArtScreenItem(
 
 @Preview(showBackground = true)
 @Composable
-fun ArtScreenPreview() {
+fun GreenCollectionScreenPreview() {
     MaterialTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ArtScreen()
+            GreenCollectionScreen()
         }
     }
 }
