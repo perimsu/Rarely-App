@@ -6,7 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +26,10 @@ import com.example.rarelyapp.ui.theme.sloop_script_three
 
 @Composable
 fun AuctionDetailScreen() {
+    var startingPrice by remember { mutableStateOf(30.00) }
+    var userInput by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,15 +57,13 @@ fun AuctionDetailScreen() {
             modifier = Modifier.padding(bottom = 24.dp)
         )
 
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(id = R.drawable.birkin),
-                contentDescription = "Hermes Birkin Bag",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(285.dp)
-            )
-        }
+        Image(
+            painter = painterResource(id = R.drawable.birkin),
+            contentDescription = "Hermes Birkin Bag",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(285.dp)
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -105,7 +107,7 @@ fun AuctionDetailScreen() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Starting Price: 30.00 USD",
+                text = "Starting Price: %.2f USD".format(startingPrice),
                 fontWeight = FontWeight.Medium,
                 fontFamily = gfs_didot_regular,
                 fontSize = 16.sp,
@@ -115,12 +117,14 @@ fun AuctionDetailScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Box(
+        TextField(
+            value = userInput,
+            onValueChange = { userInput = it },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
                 .background(
-                    color = Color.White,
+                    color = Color(0xFFFAF7F2),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .border(
@@ -128,15 +132,32 @@ fun AuctionDetailScreen() {
                     color = Color(0xFF001F54),
                     shape = RoundedCornerShape(24.dp)
                 ),
-            contentAlignment = Alignment.CenterStart
-        ) {
+            singleLine = true
+        )
 
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Handle bid placement */ },
+            onClick = {
+                val bid = userInput.toDoubleOrNull()
+                if (bid == null) {
+                    errorMessage = "Please enter a valid number."
+                } else if (bid <= startingPrice) {
+                    errorMessage = "Your bid must be higher than the starting price."
+                } else {
+                    startingPrice = bid
+                    errorMessage = ""
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -155,9 +176,6 @@ fun AuctionDetailScreen() {
         }
     }
 }
-
-
-
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

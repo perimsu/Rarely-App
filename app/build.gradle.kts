@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -53,6 +54,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation(libs.androidx.media3.effect)
     implementation(libs.play.services.analytics.impl)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.runtime.livedata)
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
