@@ -3,6 +3,7 @@ package com.example.rarelyapp.ui.categories
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -30,6 +31,28 @@ import com.example.rarelyapp.ui.theme.playfairdisplay
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GreenCollectionScreen() {
+    var sortOption by remember { mutableStateOf("Price") }
+    var expanded by remember { mutableStateOf(false) }
+
+    val products = listOf(
+        GreenCollectionScreenItem("Masion Dousha Bag", "1300", R.drawable.green1),
+        GreenCollectionScreenItem("Ousha Coat", "2000", R.drawable.green2),
+        GreenCollectionScreenItem("Green Collection", "3500", R.drawable.green3),
+        GreenCollectionScreenItem("Green Collection", "2000", R.drawable.green4)
+    )
+
+    // Filtreleme ve sıralama işlemi
+    val sortedProducts = when (sortOption) {
+        "Price" -> products.sortedBy {
+            it.price.replace(",", "").toIntOrNull() ?: 0
+        }
+        "Price DESC" -> products.sortedByDescending {
+            it.price.replace(",", "").toIntOrNull() ?: 0
+        }
+        "Name" -> products.sortedBy { it.title }
+        else -> products
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -61,23 +84,43 @@ fun GreenCollectionScreen() {
         }
 
         item {
-            Text(
-                text = "Filter",
-                fontFamily = playfairdisplay,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Filter",
+                    fontFamily = playfairdisplay,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable { expanded = true }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Price"
+                            expanded = false
+                        },
+                        text = { Text("Price: Low to High") }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Price DESC"
+                            expanded = false
+                        },
+                        text = { Text("Price: High to Low") }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Name"
+                            expanded = false
+                        },
+                        text = { Text("Name: A to Z") }
+                    )
+                }
+            }
         }
-
-        val products = listOf(
-            GreenCollectionScreenItem("Masion Dousha Bag", "1300 USD", R.drawable.green1),
-            GreenCollectionScreenItem("Ousha Coat", "2,000 USD", R.drawable.green2),
-            GreenCollectionScreenItem("Green Collection", "3,500 USD", R.drawable.green3),
-            GreenCollectionScreenItem("Green Collection", "2,000 USD", R.drawable.green4)
-        )
 
         item {
             LazyVerticalGrid(
@@ -88,10 +131,10 @@ fun GreenCollectionScreen() {
                     .fillMaxWidth()
                     .height(650.dp)
             ) {
-                items(products) { product ->
+                items(sortedProducts) { product ->
                     SmallGreenCollectionProductCard(
                         title = product.title,
-                        price = product.price,
+                        price = "${product.price} USD",
                         imageResId = product.imageResId
                     )
                 }
