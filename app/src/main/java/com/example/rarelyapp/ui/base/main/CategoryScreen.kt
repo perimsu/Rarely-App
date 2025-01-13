@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,7 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rarelyapp.R
 
 @Composable
-fun CategoriesScreen() {
+fun CategoriesScreen(navController: NavController) {
 
     // Ana düzeni oluşturur, tüm ekranı kaplar.
     Box(
@@ -66,7 +65,7 @@ fun CategoriesScreen() {
             ) {
                 // categoryList'teki her bir kategori için CategoryItem bileşeni oluşturur.
                 items(categoryList) { category ->
-                    CategoryItem(category = category) // Kategori elemanını CategoryItem'e geçirir.
+                    CategoryItem(category = category, navController = navController) // Kategori elemanını CategoryItem'e geçirir.
                 }
             }
         }
@@ -74,7 +73,7 @@ fun CategoriesScreen() {
 }
 
 @Composable
-fun CategoryItem(category: Category) {
+fun CategoryItem(category: Category, navController: NavController) {
     // Kategori kartını temsil eden kutu.
     Box(
         modifier = Modifier
@@ -82,7 +81,7 @@ fun CategoryItem(category: Category) {
             .height(130.dp) // Kartın yüksekliğini belirler.
             .clip(RoundedCornerShape(16.dp)) // Köşeleri yuvarlatır.
             .background(Color.LightGray) // Varsayılan arka plan rengi.
-            .clickable { /* Tıklama işlemi */ } // Kartın tıklanabilir olmasını sağlar.
+            .clickable { navController.navigate(category.route) } // Kartın tıklanabilir olmasını sağlar.
     ) {
         // Kartın arka plan görseli.
         Image(
@@ -107,20 +106,23 @@ fun CategoryItem(category: Category) {
 }
 
 // Kategori veri modelini tanımlayan sınıf.
-data class Category(val title: String, val image: Int)
+data class Category(
+    val title: String,
+    val image: Int,
+    val route: String) //route eklendi -p
 
 // Kategori listesini tanımlayan örnek veri.
 val categoryList = listOf(
-    Category("Art", R.drawable.cat1), // Sanat kategorisi.
-    Category("Fashion", R.drawable.cat2), // Moda kategorisi.
-    Category("Collabs", R.drawable.cat3), // İş birliği kategorisi.
-    Category("Auction", R.drawable.cat4), // Müzayede kategorisi.
-    Category("Green Collection", R.drawable.cat5) // Yeşil koleksiyon kategorisi.
+    Category("Art", R.drawable.cat1, "art_screen"), // Sanat kategorisi.
+    Category("Fashion", R.drawable.cat2, "fashion_screen"), // Moda kategorisi.
+    Category("Collabs", R.drawable.cat3, "collabs_screen"), // İş birliği kategorisi.
+    Category("Auction", R.drawable.cat4, "auction_screen"), // Satış kategorisi.), // Müzayede kategorisi.
+    Category("Green Collection", R.drawable.cat5, "green_collection_screen"), // Yeşil koleksiyon kategorisi.) // Yeşil koleksiyon kategorisi.
 )
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewCategories() {
-    // CategoriesScreen bileşenini önizleme.
-    CategoriesScreen()
+    val navController = rememberNavController() // Yerel bir NavController oluşturulur.
+    CategoriesScreen(navController = navController)
 }
