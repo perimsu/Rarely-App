@@ -2,6 +2,7 @@ package com.example.rarelyapp.ui.categories
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -28,6 +29,9 @@ import com.example.rarelyapp.ui.theme.playfairdisplay
 
 @Composable
 fun CollaborationsScreen() {
+    var sortOption by remember { mutableStateOf("Price") }
+    var expanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,30 +53,66 @@ fun CollaborationsScreen() {
 
         LargeCollaborationsProductCard(
             imageResId = R.drawable.cartier,
-            title = "Cartier Tank Francasie Watch",
+            title = "Cartier Tank Francaise Watch",
             price = "10.000 USD"
         )
 
-        Text(
-            text = "Filter",
-            fontFamily = playfairdisplay,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Filter",
+                fontFamily = playfairdisplay,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .clickable { expanded = true }
+                    .padding(vertical = 8.dp)
+            )
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(200.dp)
+            ) {
+                DropdownMenuItem(
+                    onClick = {
+                        sortOption = "Price"
+                        expanded = false
+                    },
+                    text = { Text("Price: Low to High") }
+                )
+                DropdownMenuItem(
+                    onClick = {
+                        sortOption = "Price DESC"
+                        expanded = false
+                    },
+                    text = { Text("Price: High to Low") }
+                )
+                DropdownMenuItem(
+                    onClick = {
+                        sortOption = "Name"
+                        expanded = false
+                    },
+                    text = { Text("Name: A to Z") }
+                )
+            }
+        }
 
         val products = listOf(
             CollaborationsItem("Dior Saddle Bag", "4,700 USD", R.drawable.dior, R.drawable._00px_dior_logo_svg_1),
             CollaborationsItem("Chanel Ribbon Dress", "9,500 USD", R.drawable.chanel, R.drawable.chanel_logo_svg_1)
         )
 
+        val sortedProducts = when (sortOption) {
+            "Price" -> products.sortedBy { it.price.replace(",", "").replace("USD", "").trim().toIntOrNull() ?: 0 }
+            "Price DESC" -> products.sortedByDescending { it.price.replace(",", "").replace("USD", "").trim().toIntOrNull() ?: 0 }
+            "Name" -> products.sortedBy { it.title }
+            else -> products
+        }
+
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(products) { product ->
+            items(sortedProducts) { product ->
                 SmallCollaborationsProductCard(
                     title = product.title,
                     price = product.price,
@@ -189,6 +229,7 @@ fun SmallCollaborationsProductCard(title: String, price: String, brand: String, 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .fillMaxWidth()
         ) {
             Box(
                 modifier = Modifier

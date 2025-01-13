@@ -41,7 +41,6 @@ fun GreenCollectionScreen() {
         GreenCollectionScreenItem("Green Collection", "2000", R.drawable.green4)
     )
 
-    // Filtreleme ve sıralama işlemi
     val sortedProducts = when (sortOption) {
         "Price" -> products.sortedBy {
             it.price.replace(",", "").toIntOrNull() ?: 0
