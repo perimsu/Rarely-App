@@ -31,5 +31,17 @@
     <string name="redirect_to_sign_up">Sign Up</string>
     <string name="log_in">Log In</string>
     <string name="create_Password">CREATE PASSWORD</string>
+    <string name="confirm_payment">Confirm Payment</string>
+    <string name="add_card">ADD CARD</string>
+    <string name="payment_successful">PAYMENT</string>
+    <string name="payment_successful2">Payment Successful!</string>
+    <string name="payment_successful3">Thank You For your Purchase.</string>
+    <string name="payment_successful4">View Order</string>
+    <string name="payment_methods">PAYMENT METHODS</string>
+    <string name="track_order">TRACK ORDER</string>
+    <string name="order_details">Order Details</string>
+    <string name="order_status">Order status</string>
+    <string name="my_orders">MY ORDERS</string>
+    <string name="check_out">CHECK OUT</string>
 
 </resources>

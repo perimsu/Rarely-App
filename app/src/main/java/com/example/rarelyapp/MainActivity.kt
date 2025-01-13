@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import com.example.rarelyapp.ui.categories.ArtScreen
 import com.example.rarelyapp.ui.authentication.complete_account.CompleteProfileScreen
 import com.example.rarelyapp.ui.authentication.complete_account.CompleteProfileScreenViewmodel
+import com.example.rarelyapp.ui.base.main.MainNavigation
 import com.example.rarelyapp.ui.categories.CollaborationsScreen
 import com.example.rarelyapp.ui.categories.FashionScreen
 import com.example.rarelyapp.ui.theme.RarelyAppTheme
@@ -29,12 +30,13 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(paddingValues)
-                        ) {
+                       ) {
                             FashionScreen()
                         }
                     }
                 )
 
+                MainNavigation()
             }
         }
     }
