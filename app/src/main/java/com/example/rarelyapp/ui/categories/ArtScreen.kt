@@ -1,8 +1,6 @@
 package com.example.rarelyapp.ui.categories
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -30,6 +28,21 @@ import com.example.rarelyapp.ui.theme.playfairdisplay
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ArtScreen() {
+    var sortOption by remember { mutableStateOf("Price") }
+    var expanded by remember { mutableStateOf(false) }
+    val products = listOf(
+        ArtScreenItem("Painting", "700 USD", R.drawable.art1),
+        ArtScreenItem("Painting", "4,000 USD", R.drawable.art2),
+        ArtScreenItem("Painting", "3,500 USD", R.drawable.art3),
+        ArtScreenItem("Painting", "2,000 USD", R.drawable.art4)
+    )
+    val sortedProducts = when (sortOption) {
+        "Price" -> products.sortedBy { it.price.replace(",", "").replace("USD", "").trim().toIntOrNull() ?: 0 }
+        "Price DESC" -> products.sortedByDescending { it.price.replace(",", "").replace("USD", "").trim().toIntOrNull() ?: 0 }
+        "Name" -> products.sortedBy { it.title }
+        else -> products
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -39,7 +52,6 @@ fun ArtScreen() {
     ) {
         item {
             Spacer(modifier = Modifier.height(24.dp))
-
             Text(
                 text = "ART",
                 fontFamily = aboreto,
@@ -51,7 +63,6 @@ fun ArtScreen() {
                     .padding(bottom = 24.dp)
             )
         }
-
         item {
             LargeArtProductCard(
                 imageResId = R.drawable.kintsugi_vase,
@@ -61,24 +72,44 @@ fun ArtScreen() {
         }
 
         item {
-            Text(
-                text = "Filter",
-                fontFamily = playfairdisplay,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Filter",
+                    fontFamily = playfairdisplay,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    modifier = Modifier.clickable { expanded = true }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.width(200.dp)
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Price"
+                            expanded = false
+                        },
+                        text = { Text("Price: Low to High") }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Price DESC"
+                            expanded = false
+                        },
+                        text = { Text("Price: High to Low") }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Name"
+                            expanded = false
+                        },
+                        text = { Text("Name: A to Z") }
+                    )
+                }
+            }
+
         }
-
-        val products = listOf(
-            ArtScreenItem("Painting", "700 USD", R.drawable.art1),
-            ArtScreenItem("Painting", "4,000 USD", R.drawable.art2),
-            ArtScreenItem("Painting", "3,500 USD", R.drawable.art3),
-            ArtScreenItem("Painting", "2,000 USD", R.drawable.art4)
-        )
-
         item {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -86,9 +117,9 @@ fun ArtScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(650.dp)
+                    .heightIn(min = 100.dp, max = 650.dp)
             ) {
-                items(products) { product ->
+                items(sortedProducts) { product ->
                     SmallArtProductCard(
                         title = product.title,
                         price = product.price,

@@ -3,6 +3,7 @@ package com.example.rarelyapp.ui.categories
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -30,6 +31,27 @@ import com.example.rarelyapp.ui.theme.playfairdisplay
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FashionScreen() {
+    var sortOption by remember { mutableStateOf("Price") }
+    var expanded by remember { mutableStateOf(false) }
+
+    val products = listOf(
+        FashionScreenItem("Lady Dior Micro Bag", "4700", R.drawable.dior_bag),
+        FashionScreenItem("Gucci Monogram Shirt", "3000", R.drawable.gucci),
+        FashionScreenItem("Louis Vuitton Limited Edition Coated Canvas Jeff Koons Monet", "7500", R.drawable.monet),
+        FashionScreenItem("Miu Miu Arcadie Leather Bag", "3500", R.drawable.miumiu)
+    )
+
+    val sortedProducts = when (sortOption) {
+        "Price" -> products.sortedBy {
+            it.price.replace(",", "").toIntOrNull() ?: 0
+        }
+        "Price DESC" -> products.sortedByDescending {
+            it.price.replace(",", "").toIntOrNull() ?: 0
+        }
+        "Name" -> products.sortedBy { it.title }
+        else -> products
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -60,25 +82,44 @@ fun FashionScreen() {
             )
         }
 
-
         item {
-            Text(
-                text = "Filter",
-                fontFamily = playfairdisplay,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "Filter",
+                    fontFamily = playfairdisplay,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable { expanded = true }
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Price"
+                            expanded = false
+                        },
+                        text = { Text("Price: Low to High") }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Price DESC"
+                            expanded = false
+                        },
+                        text = { Text("Price: High to Low") }
+                    )
+                    DropdownMenuItem(
+                        onClick = {
+                            sortOption = "Name"
+                            expanded = false
+                        },
+                        text = { Text("Name: A to Z") }
+                    )
+                }
+            }
         }
-
-        val products = listOf(
-            FashionScreenItem("Lady Dior Micro Bag", "4700 USD", R.drawable.dior_bag),
-            FashionScreenItem("Gucci Monogram Shirt", "3,000 USD", R.drawable.gucci),
-            FashionScreenItem("Louis Vuitton\n" +
-                    "Limited Edition Coated Canvas Jeff Koons Monet", "7,500 USD", R.drawable.monet),
-            FashionScreenItem("Miu Miu Arcadie Leather Bag", "3,500 USD", R.drawable.miumiu)
-        )
 
         item {
             LazyVerticalGrid(
@@ -89,10 +130,10 @@ fun FashionScreen() {
                     .fillMaxWidth()
                     .height(650.dp)
             ) {
-                items(products) { product ->
-                    SmallArtProductCard(
+                items(sortedProducts) { product ->
+                    SmallFashionProductCard(
                         title = product.title,
-                        price = product.price,
+                        price = "${product.price} USD",
                         imageResId = product.imageResId
                     )
                 }
@@ -153,14 +194,14 @@ fun LargeFashionProductCard(imageResId: Int, title: String, price: String) {
                             tint = if (isFavorite) Color.Red else Color.Gray,
                             modifier = Modifier.size(20.dp)
                         )
-
                     }
                 }
             }
             Divider(
                 color = Color.Gray,
                 thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(top = 0.dp)
             )
         }
