@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -86,11 +87,11 @@ fun MyBagScreen() {
                 }
             }
 
-            // Toplam fiyat kısmı
-            Box(
+            // Toplam fiyat ve devam butonu kısmı
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth() // Ekranın genişliğini kaplar
-                    .padding(vertical = 16.dp) // Dikey boşluk eklenir
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
             ) {
                 // Fiyat detayları için yatay düzen
                 Row(
@@ -114,6 +115,29 @@ fun MyBagScreen() {
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Continue to Payment butonu
+                Button(
+                    onClick = { /* TODO: Navigate to payment screen */ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF18223D)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continue to Payment",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
                     )
                 }
