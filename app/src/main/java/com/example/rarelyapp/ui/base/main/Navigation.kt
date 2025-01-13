@@ -4,11 +4,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.ui.Modifier
@@ -16,6 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.rarelyapp.ui.profile.ProfileScreen
+import com.example.rarelyapp.ui.profile.ProfileScreenAction
+import com.example.rarelyapp.ui.profile.ProfileScreenViewModel
 
 @Composable
 fun MainNavigation() {
@@ -76,7 +77,20 @@ fun MainNavigation() {
                 MyBagScreen()
             }
             composable("profile") {
-                // ProfileScreen()
+
+                val viewModel = ProfileScreenViewModel() // ViewModel'i burada oluşturuyoruz
+                val uiState = ProfileScreenUiState() // Varsayılan uiState
+
+                // onAction fonksiyonunu oluşturuyoruz
+                val onAction: (ProfileScreenAction) -> Unit = { action ->
+                    viewModel.onAction(action)
+                }
+
+                ProfileScreen(
+                    uiState = uiState,
+                    onAction = onAction,
+                    viewModel = viewModel
+                )
             }
         }
     }

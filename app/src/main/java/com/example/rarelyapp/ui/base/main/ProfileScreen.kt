@@ -12,21 +12,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import com.example.rarelyapp.R
+import com.example.rarelyapp.ui.base.main.ProfileScreenUiState
 import com.example.rarelyapp.ui.theme.DarkBlue
 import com.example.rarelyapp.ui.theme.Grey
 import com.example.rarelyapp.ui.theme.RarelyAppTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 @Composable
 fun ProfileScreen(
     uiState: ProfileScreenUiState,
-    onAction: (ProfileScreenAction) -> Unit
+    onAction: (ProfileScreenAction) -> Unit,
+    viewModel: ProfileScreenViewModel
 ) {
+
+    val uiState by viewModel.uiState.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -37,15 +47,16 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .background(Color.Transparent)
         ) {
+            Spacer(modifier = Modifier.height(8.dp))
             //left Arrow
             Image(
                 painter = painterResource(R.drawable.leftarrow),
-                contentDescription = "Left Arrow",
+                contentDescription = "Profile Picture",
                 modifier = Modifier
-                    .size(24.dp)
-                    .padding(16.dp)
+                    .size(35.dp)
+                    .clip(RectangleShape)
                     .align(Alignment.TopStart),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Crop
             )
         }
         Column(
@@ -287,17 +298,10 @@ fun LabeledTextField(
         }
     }
 }
-data class ProfileScreenUiState(
-    val userName: String = "Emily Johnson",
-    val followingCount: Int = 45,
-    val followerCount: Int = 30,
-    val salesCount: Int = 14,
-    val rareName: String = "",
-    val rareDescription: String = "",
-    val rarePrice: String = ""
-)
 
-sealed interface ProfileScreenAction {
+
+
+public sealed interface ProfileScreenAction {
     data class RareNameChanged(val name: String) : ProfileScreenAction
     data class RareDescriptionChanged(val description: String) : ProfileScreenAction
     data class RarePriceChanged(val price: String) : ProfileScreenAction
@@ -305,17 +309,45 @@ sealed interface ProfileScreenAction {
 }
 
 
+public class ProfileScreenViewModel : ViewModel() {
+
+    private val _uiState = MutableStateFlow(ProfileScreenUiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun onAction(action: ProfileScreenAction) {
+        when (action) {
+            is ProfileScreenAction.RareNameChanged -> {
+                _uiState.update { it.copy(rareName = action.name) }
+            }
+            is ProfileScreenAction.RareDescriptionChanged -> {
+                _uiState.update { it.copy(rareDescription = action.description) }
+            }
+            is ProfileScreenAction.RarePriceChanged -> {
+                _uiState.update { it.copy(rarePrice = action.price) }
+            }
+            is ProfileScreenAction.OnUploadClicked -> {
+                // Yükleme işlemleri burada yapılır.
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
-fun ProfileScreenPreview()
-{ RarelyAppTheme {
-    ProfileScreen( uiState = ProfileScreenUiState(
-        userName = "Emily Johnson",
-        followingCount = 45,
-        followerCount = 30,
-        salesCount = 14,
-        rareName = "",
-        rareDescription = "",
-        rarePrice = "" ),
-        onAction = {} )
-} }
+fun ProfileScreenPreview() {
+    val uiState = ProfileScreenUiState() // varsayılan değerlerle oluşturulmuş uiState
+    val viewModel = ProfileScreenViewModel() // ViewModel örneği
+
+    // onAction fonksiyonunun tanımlanması
+    val onAction: (ProfileScreenAction) -> Unit = { action ->
+        viewModel.onAction(action)
+    }
+
+    RarelyAppTheme {
+        ProfileScreen(
+            uiState = uiState,  // uiState parametresini geçiriyoruz
+            onAction = onAction, // onAction fonksiyonunu geçiriyoruz
+            viewModel = viewModel  // viewModel parametresini geçiriyoruz
+        )
+    }
+}
