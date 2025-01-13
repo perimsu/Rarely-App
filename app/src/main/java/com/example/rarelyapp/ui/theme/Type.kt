@@ -9,7 +9,19 @@ import androidx.compose.ui.unit.sp
 import com.example.rarelyapp.R
 
 val aboreto = FontFamily(
-    Font(R.font.aboreto_regular,)
+    Font(R.font.aboreto_regular)
+)
+
+val sloop_script_three = FontFamily(
+    Font(R.font.sloop_script_three)
+)
+
+val playfairdisplay = FontFamily(
+    Font(R.font.playfairdisplay)
+)
+
+val playfairdisplay_italic = FontFamily(
+    Font(R.font.playfairdisplay_italic)
 )
 
 val gfs_didot_regular = FontFamily(
